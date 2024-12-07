@@ -5,9 +5,6 @@ from Classes import Document, Author, HackerNewsDocument, TheGuardianDocument
 from bs4 import BeautifulSoup
 from Corpus import Corpus, DocumentFactory
 
-
-
-
 #--------------Définition des variables
 #variable pour stocker les documents à l'état 'brut'
 collection = []
@@ -18,10 +15,6 @@ query ="War"
 api_key_guardian = "265a16e3-294c-4c62-ae88-a274906a6333"
 
 
-
-
-
-#-----------------DEBUT DU CODE
 def search_query(texte,mots_cles) : 
     #Vérifie si un des mots clés est présent dans le texte ou le titre
     return any(mot.lower() in texte.lower() for mot in mots_cles)
@@ -45,8 +38,6 @@ def extraire_text_url(url) :
             return "Texte non disponible"
     except Exception :
         return "Texte non disponible"
-
-
 
 #-----------------------WebScrapping avec Hacker News API
 def add_doc_HackerNews(collection,query,nbDoc) :
@@ -86,14 +77,6 @@ def add_doc_HackerNews(collection,query,nbDoc) :
                 collection.append(doc)
                 nbCount +=1
     return collection
-
-
-
-
-
-
-
-
 
 #-----------------------WebScrapping avec The Guardian API
 def add_doc_Guardian(collection, query, nbDoc, api_key):
@@ -136,15 +119,6 @@ def add_doc_Guardian(collection, query, nbDoc, api_key):
 
     return collection
 
-
-
-
-
-
-
-
-
-
 #-------------------RECUPERATION DES DONNEES
 add_doc_HackerNews(collection,query,nbDoc) 
 add_doc_Guardian(collection,query, nbDoc, api_key_guardian)
@@ -154,8 +128,6 @@ for doc in collection :
     print('------------------------------')
 '''
 print(f"nbCount : {len(collection)}")    
-
-
 
 
 # Création de l'index de documents à partir de la collection
@@ -180,15 +152,7 @@ for doc in collection:
     authors[aut2id[doc.auteur]].add(doc.texte)
 
 
-
 # Construction du corpus à partir des documents présents dans la collection
 corpus = Corpus("Mon corpus")
 for doc in collection:
     corpus.add(doc)
-
-
-
-
-
-
-

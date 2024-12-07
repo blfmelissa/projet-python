@@ -1,4 +1,4 @@
-# =============== La classe Document ===============
+
 class Document:
     # Initialisation des variables de la classe
     def __init__(self, titre="", auteur="", date="", url="", texte=""):
@@ -23,8 +23,6 @@ class Document:
         return f"{self.titre}, par {self.auteur}"
 
 
-
-# =============== La classe Author ===============
 class Author:
     def __init__(self, name):
         self.name = name
@@ -39,9 +37,6 @@ class Author:
         return f"Auteur : {self.name}\t# productions : {self.ndoc}"
     
 
-
-
-# =============== La sous classe HackerNewsDocument ===============
 class HackerNewsDocument(Document) : 
     def __init__(self, titre, auteur, date, url, texte, score) : 
         Document.__init__(self, titre, auteur, date, url, texte)
@@ -60,9 +55,6 @@ class HackerNewsDocument(Document) :
         return "HackerNews"
 
 
-
-
-# =============== La sous classe HackerNewsDocument ===============
 class TheGuardianDocument(Document) : 
     def __init__(self, titre, auteur, date, url, texte, firstPublicationDate) : 
         Document.__init__(self, titre, auteur, date, url, texte)
@@ -79,5 +71,3 @@ class TheGuardianDocument(Document) :
     
     def getType(self) :
         return "The_Guardian"
-
-

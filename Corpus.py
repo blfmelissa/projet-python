@@ -3,9 +3,6 @@ from Classes import Author
 import re
 import pandas as pd 
 
-
-# =============== CLASSE CORPUS ===============
-
 class Corpus:
     def __init__(self, nom):
         self.nom = nom
@@ -41,13 +38,8 @@ class Corpus:
 
         return "\n".join(list(map(str, docs)))
 
-        
-
-
-
-
+ 
 # --------------- CLASSE USINE ----------------
-
 class DocumentFactory:
     @staticmethod
     def creerDoc(source, *args):
@@ -60,7 +52,3 @@ class DocumentFactory:
         else:
             raise ValueError("Source non supportée. Veuillez utiliser 'HackerNews' ou 'The_Guardian'.")
     
-
-
-
-
