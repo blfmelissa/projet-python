@@ -4,6 +4,10 @@ from datetime import datetime, timezone
 from Classes import Document, Author, HackerNewsDocument, TheGuardianDocument
 from bs4 import BeautifulSoup
 from Corpus import Corpus, DocumentFactory
+from scipy.sparse import csr_matrix
+import numpy as np
+from SearchEngine import SearchEngine
+import pandas as pd
 
 #--------------Définition des variables
 #variable pour stocker les documents à l'état 'brut'
@@ -156,3 +160,26 @@ for doc in collection:
 corpus = Corpus("Mon corpus")
 for doc in collection:
     corpus.add(doc)
+
+'''
+#corpus test
+corpus = Corpus("mon corpus")
+corpus.add(Document("14/11/2024","doc1","me","url1","I am beautiful"))
+corpus.add(Document("14/11/2024","doc2","confident me","url2","I am very very beautiful"))
+corpus.add(Document("14/11/2024","doc3","my girl","url3","Babe you are very beautiful"))
+corpus.add(Document("14/11/2024","doc4","my mother","url4","You are very beautiful"))
+
+# Création du moteur de recherche 
+search_engine = SearchEngine(corpus)
+
+query = "very"
+results = search_engine.search(query)
+print(results)
+'''
+
+'''
+#Ou sinon
+query = input("Enter keys words...")
+results = search_engine.search(query)
+print(results)
+'''

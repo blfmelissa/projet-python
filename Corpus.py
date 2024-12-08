@@ -2,7 +2,9 @@ import Classes as cls
 from Classes import Author
 import re
 import pandas as pd
-from collections import defaultdict 
+from collections import defaultdict
+from nltk.corpus import stopwords  #permet de ne pas prendre en compte les "stopwords" dans le vocabulaire
+
 
 class Corpus:
     def __init__(self, nom):
@@ -91,28 +93,30 @@ class Corpus:
         df = defaultdict(int)    # nombre de documents contenant chaque mot
         vocab = set()            
         
+        stop_words = set(stopwords.words('english')) #stopwords anglais
+
         for doc in self.id2doc.values():
             texte_nettoye = self.nettoyer_texte(doc.get_text())
             mots_doc = set(texte_nettoye.split())
             vocab.update(mots_doc)
             
             for mot in mots_doc:
-                tf[mot] += texte_nettoye.split().count(mot)  
-                df[mot] += 1  
+                #if mot not in stop_words :
+                    tf[mot] += texte_nettoye.split().count(mot)  
+                    df[mot] += 1  
     
         tf_df = pd.DataFrame(list(tf.items()), columns=["Mot", "TF"])
         df_df = pd.DataFrame(list(df.items()), columns=["Mot", "DF"])
         # term frequency et document frequency
         
         # fusionner des deux dataframes sur la colonne "Mot"
-        result_df = pd.merge(tf_df, df_df, on="Mot")
+        freq = pd.merge(tf_df, df_df, on="Mot")
         
         print(f"{len(vocab)} mots différents dans le vocabulaire")
         print(f"Les {nreturn} mots les plus fréquents :")
-        print(result_df.nlargest(nreturn, 'TF')[['Mot', 'TF', 'DF']])
-        # tri par TF
+        print(freq.nlargest(nreturn, 'TF')[['Mot', 'TF', 'DF']]) # tri par TF
 
-        return result_df
+        return freq # renvoie un dataframe
 
  
 # --------------- CLASSE USINE ----------------
