@@ -1,9 +1,7 @@
-from Corpus import Corpus, DocumentFactory
-import scipy as sp
+from Corpus import Corpus, DocumentFactory 
 import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
-from collections import defaultdict
 
 class SearchEngine : 
     def __init__(self, corpus) : 
