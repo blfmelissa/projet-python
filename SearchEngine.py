@@ -15,10 +15,10 @@ class SearchEngine :
         # tri par ordre alphabétique
         voc = voc.sort_values(by="Mot").reset_index(drop=True)
         self.vocab = {}
-        for id, row in voc.iterrows(): # parcourir un dataframe (par ligne)
-            mot = row["Mot"]
+        for v in voc.itertuples(): # parcourir un dataframe (par tuple)
+            mot = v.Mot
             self.vocab[mot] = {
-                "id": id
+                "id": v.Index
             }
 
     def SetMatrice_TFIDF(self) :
@@ -66,8 +66,8 @@ class SearchEngine :
         # calcule la norme (longueur) du vecteur
         query_norm = np.linalg.norm(query_vec) 
         if query_norm == 0 : 
-            print ("Aucun mot n'existe dans le vocabulaire du corpus")
-            return pd.DataFrame(columns=["Document", "Similitude"])
+            print ("Ce(s) mot(s) n'existe(nt) pas dans le vocabulaire du corpus, \nou sont des stopwords")
+            return pd.DataFrame(columns=["Titre", "Auteur", "Extrait", "Similitude", "URL", "Type"])
         
         # calcul de la norme de chaque document dans la matrice tf-idf
         doc_norms = np.linalg.norm(self.mat_TFIDF.toarray(), axis=1)
@@ -78,13 +78,36 @@ class SearchEngine :
         # Tri décroissant des résultats 
         most_similar_doc = np.argsort(cos_sim)[::-1]
         
-        results = [
-            {"Document": self.corpus.id2doc[i+1], "Similitude": cos_sim[i]} 
-            for i in most_similar_doc if cos_sim[i] > 0
-        ]
+        results = []
+        for i in most_similar_doc : 
+            if cos_sim[i] > 0 : 
+                doc = self.corpus.id2doc[i+1]
+                texte = doc.get_text()
+                extrait = self.get_excerpt(texte, listeMotsUser)
+                results.append({
+                    "Titre": doc.titre,
+                    "Auteur": doc.auteur,
+                    "Extrait": extrait,
+                    "Similitude": cos_sim[i],
+                    "URL": getattr(doc, 'url', 'Non disponible'),
+                    "Type": doc.getType()
+                })
 
         if len(results) == 0:
             print("Aucun document ne correspond à la requête")
-            return pd.DataFrame(columns=["Document", "Similitude"])
+            return pd.DataFrame(columns=["Titre", "Auteur", "Extrait", "Similitude", "URL", "Type"])
 
         return pd.DataFrame(results)
+    
+    def get_excerpt(self, texte, mots_cles, taille=20):
+        """
+        Retourne un extrait du texte autour des mots-clés.
+        """
+        texte = texte.lower()
+        for mot in mots_cles:
+            start = texte.find(mot)
+            if start != -1:
+                start_excerpt = max(0, start - taille)
+                end_excerpt = min(len(texte), start + len(mot) + taille)
+                return f"...{texte[start_excerpt:end_excerpt]}..."
+        return "Extrait non disponible"

@@ -101,7 +101,7 @@ class Corpus:
             vocab.update(mots_doc)
             
             for mot in mots_doc:
-                #if mot not in stop_words :
+                if mot not in stop_words :
                     tf[mot] += texte_nettoye.split().count(mot)  
                     df[mot] += 1  
     
