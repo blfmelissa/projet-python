@@ -2,6 +2,7 @@ from Corpus import Corpus, DocumentFactory
 import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
+import string
 
 class SearchEngine : 
     def __init__(self, corpus) : 
@@ -15,10 +16,10 @@ class SearchEngine :
         # tri par ordre alphabétique
         voc = voc.sort_values(by="Mot").reset_index(drop=True)
         self.vocab = {}
-        for v in voc.itertuples(): # parcourir un dataframe (par tuple)
+        for i, v in enumerate(voc.itertuples()): # parcourir un dataframe (par tuple)
             mot = v.Mot
             self.vocab[mot] = {
-                "id": v.Index
+                "id": i
             }
 
     def SetMatrice_TFIDF(self) :
@@ -28,6 +29,7 @@ class SearchEngine :
         for i,doc in enumerate(self.corpus.id2doc.values()):
             words = doc.get_text().lower().split()
             for word in words : 
+                word = word.translate(str.maketrans("", "", string.punctuation))
                 if word in self.vocab : 
                     rows.append(i) # indices des documents
                     cols.append(self.vocab[word]['id']) # id du mot
@@ -43,15 +45,13 @@ class SearchEngine :
         doc_freq = np.array((mat_TF > 0).sum(axis=0)).flatten() # document frequency
 
         for i, word in enumerate(self.vocab):
-            # pour ajouter des attributs dans vocab
-            self.vocab[word]['tf'] = int(term_freq[i]) 
+            self.vocab[word]['tf'] = int(term_freq[i])  
             self.vocab[word]['df'] = int(doc_freq[i])
 
         idf = np.log(n_docs / (term_freq+1)) + 1
 
         #Multiplier la matrice TF avec le vecteur IDF pour la matrice TF-IDF
         self.mat_TFIDF = mat_TF.multiply(idf) 
-
 
     def search(self,query) : 
         # prétraitement de query
@@ -99,10 +99,8 @@ class SearchEngine :
 
         return pd.DataFrame(results)
     
+    # retourne un extrait du texte autour des mots-clés
     def get_excerpt(self, texte, mots_cles, taille=20):
-        """
-        Retourne un extrait du texte autour des mots-clés.
-        """
         texte = texte.lower()
         for mot in mots_cles:
             start = texte.find(mot)

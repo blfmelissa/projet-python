@@ -89,7 +89,7 @@ class Corpus:
         return texte
 
     def stats(self, nreturn=10) :
-        tf = defaultdict(int)  # occurrences des mots
+        tf = defaultdict(int)    # occurrences des mots
         df = defaultdict(int)    # nombre de documents contenant chaque mot
         vocab = set()            
         
