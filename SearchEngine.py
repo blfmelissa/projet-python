@@ -31,7 +31,7 @@ class SearchEngine :
         for i,doc in enumerate(self.corpus.id2doc.values()):
             words = doc.get_text().lower().split()
             for word in words : 
-                words = doc.get_text().lower().split()
+                word = word.translate(str.maketrans("", "", string.punctuation))
                 if word in self.vocab : 
                     rows.append(i) # indices des documents
                     cols.append(self.vocab[word]['id']) # id du mot
