@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from collections import defaultdict
 from nltk.corpus import stopwords  #permet de ne pas prendre en compte les "stopwords" dans le vocabulaire
-
+import random
 
 class Corpus:
     def __init__(self, nom):
@@ -117,6 +117,40 @@ class Corpus:
         print(freq.nlargest(nreturn, 'TF')[['Mot', 'TF', 'DF']]) # tri par TF
 
         return freq # renvoie un dataframe
+    
+
+    def get_random_excerpt(self, texte, length=20):
+        words = texte.split()
+        if len(words) <= length:
+            return texte
+        start = random.randint(0, len(words) - length)
+        excerpt = ' '.join(words[start:start + length])
+        return f"... {excerpt} ..."
+
+
+    def get_name_authors_by_type(self,typeDoc="all"):
+        if typeDoc == 'all':
+            return sorted([author.name for author in self.authors.values()]) 
+        else:
+            authors_by_type = set()
+            for doc in self.id2doc.values():
+                if doc.getType() == typeDoc:
+                    authors_by_type.add(doc.auteur)
+            return sorted(authors_by_type)
+            
+    def get_doc_by_authors(self,authors) : 
+        results = []
+        for doc in self.id2doc.values():
+            extrait = self.get_random_excerpt(doc.texte)
+            if doc.auteur in authors : 
+                results.append({
+                    "Titre": doc.titre,
+                    "Auteur": doc.auteur,
+                    "Extrait": extrait,
+                    "URL": getattr(doc, 'url', 'Non disponible'),
+                    "Type": doc.getType()
+                })
+        return pd.DataFrame(results)
 
  
 # --------------- CLASSE USINE ----------------
@@ -131,5 +165,4 @@ class DocumentFactory:
             return cls.TheGuardianDocument(*args)
         else:
             raise ValueError("Source non supportée. Veuillez utiliser 'HackerNews' ou 'The_Guardian'.")
-    
     

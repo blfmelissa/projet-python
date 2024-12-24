@@ -92,7 +92,6 @@ class SearchEngine :
                     "URL": getattr(doc, 'url', 'Non disponible'),
                     "Type": doc.getType()
                 })
-
         if len(results) == 0:
             print("Aucun document ne correspond à la requête")
             return pd.DataFrame(columns=["Titre", "Auteur", "Extrait", "Similitude", "URL", "Type"])
