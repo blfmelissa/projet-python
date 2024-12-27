@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from collections import defaultdict
 from nltk.corpus import stopwords  #permet de ne pas prendre en compte les "stopwords" dans le vocabulaire
-
+import random
 
 class Corpus:
     def __init__(self, nom):
@@ -117,6 +117,46 @@ class Corpus:
         print(freq.nlargest(nreturn, 'TF')[['Mot', 'TF', 'DF']]) # tri par TF
 
         return freq # renvoie un dataframe
+    
+    #On récupérera aléatoirement un extrait de texte
+    #Ici, il n'y a pas de recherche parmots clés, on prend juste un extrait aléatoire
+    def get_random_excerpt(self, texte, length=20):
+        words = texte.split()
+        if len(words) <= length:
+            return texte
+        start = random.randint(0, len(words) - length)
+        excerpt = ' '.join(words[start:start + length])
+        return f"... {excerpt} ..."
+
+    #On récupère la liste des auteurs en fonction du type de document
+    #On utilisera cette fonction pour la visualisation des auteurs par type de document
+    def get_name_authors_by_type(self,typeDoc="all"):
+        #Par défaut "all" pour avoir la liste de tous les auteurs
+        if typeDoc == 'all':
+            return sorted([author.name for author in self.authors.values()]) 
+        else:
+            #Si le type est précisé à l'appel de la fonction
+            authors_by_type = set()
+            for doc in self.id2doc.values():
+                if doc.getType() == typeDoc:
+                    authors_by_type.add(doc.auteur)
+            return sorted(authors_by_type)
+
+    #On récupère les documents avec une liste de noms d'auteur
+    #On renvoie un dataframe avec les colonnes Titre, Auteur, Extrait, URL et Type        
+    def get_doc_by_authors(self,authors) : 
+        results = []
+        for doc in self.id2doc.values():
+            extrait = self.get_random_excerpt(doc.texte)
+            if doc.auteur in authors : 
+                results.append({
+                    "Titre": doc.titre,
+                    "Auteur": doc.auteur,
+                    "Extrait": extrait,
+                    "URL": getattr(doc, 'url', 'Non disponible'),
+                    "Type": doc.getType()
+                })
+        return pd.DataFrame(results)
 
  
 # --------------- CLASSE USINE ----------------
@@ -131,5 +171,4 @@ class DocumentFactory:
             return cls.TheGuardianDocument(*args)
         else:
             raise ValueError("Source non supportée. Veuillez utiliser 'HackerNews' ou 'The_Guardian'.")
-    
     

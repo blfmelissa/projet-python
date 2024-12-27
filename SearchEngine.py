@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 import string
+import contextlib
+import os
 
 class SearchEngine : 
     def __init__(self, corpus) : 
@@ -12,7 +14,8 @@ class SearchEngine :
         self.SetMatrice_TFIDF() 
 
     def SetVocab(self) : 
-        voc = self.corpus.stats()
+        with contextlib.redirect_stdout(open(os.devnull, 'w')):
+            voc = self.corpus.stats()
         # tri par ordre alphabétique
         voc = voc.sort_values(by="Mot").reset_index(drop=True)
         self.vocab = {}
@@ -48,17 +51,16 @@ class SearchEngine :
             self.vocab[word]['tf'] = int(term_freq[i])  
             self.vocab[word]['df'] = int(doc_freq[i])
 
-        idf = np.log(n_docs / (term_freq+1)) + 1
+        idf = np.log(n_docs / (doc_freq+1)) + 1
 
         #Multiplier la matrice TF avec le vecteur IDF pour la matrice TF-IDF
         self.mat_TFIDF = mat_TF.multiply(idf) 
 
     def search(self,query) : 
-        # prétraitement de query
         listeMotsUser = query.lower().split()
         
         #On vectorise la requete
-        query_vec = np.zeros(len(self.vocab)) # vecteur initialisé avec des 0
+        query_vec = np.zeros(len(self.vocab)) 
         for word in listeMotsUser:
             if word in self.vocab : 
                 query_vec[self.vocab[word]['id']] += 1
@@ -77,10 +79,9 @@ class SearchEngine :
 
         # Tri décroissant des résultats 
         most_similar_doc = np.argsort(cos_sim)[::-1]
-        
         results = []
         for i in most_similar_doc : 
-            if cos_sim[i] > 0 : 
+            if cos_sim[i] >= 0 : 
                 doc = self.corpus.id2doc[i+1]
                 texte = doc.get_text()
                 extrait = self.get_excerpt(texte, listeMotsUser)
@@ -92,7 +93,7 @@ class SearchEngine :
                     "URL": getattr(doc, 'url', 'Non disponible'),
                     "Type": doc.getType()
                 })
-
+        print(f"results : {results}")
         if len(results) == 0:
             print("Aucun document ne correspond à la requête")
             return pd.DataFrame(columns=["Titre", "Auteur", "Extrait", "Similitude", "URL", "Type"])
