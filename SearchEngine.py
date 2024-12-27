@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 import string
-import contextlib
-import os
 
 class SearchEngine : 
     def __init__(self, corpus) : 
@@ -14,8 +12,7 @@ class SearchEngine :
         self.SetMatrice_TFIDF() 
 
     def SetVocab(self) : 
-        with contextlib.redirect_stdout(open(os.devnull, 'w')):
-            voc = self.corpus.stats()
+        voc = self.corpus.stats()
         # tri par ordre alphabétique
         voc = voc.sort_values(by="Mot").reset_index(drop=True)
         self.vocab = {}
