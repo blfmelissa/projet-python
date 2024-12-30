@@ -131,11 +131,9 @@ class Corpus:
     #On récupère la liste des auteurs en fonction du type de document
     #On utilisera cette fonction pour la visualisation des auteurs par type de document
     def get_name_authors_by_type(self,typeDoc="all"):
-        #Par défaut "all" pour avoir la liste de tous les auteurs
         if typeDoc == 'all':
             return sorted([author.name for author in self.authors.values()]) 
         else:
-            #Si le type est précisé à l'appel de la fonction
             authors_by_type = set()
             for doc in self.id2doc.values():
                 if doc.getType() == typeDoc:

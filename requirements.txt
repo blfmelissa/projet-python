@@ -1,0 +1,8 @@
+numpy
+pandas
+scipy
+nltk
+requests
+bs4
+ipywidgets
+ipython

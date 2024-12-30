@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 import string
+import contextlib
+import os
 
 class SearchEngine : 
     def __init__(self, corpus) : 
@@ -12,7 +14,8 @@ class SearchEngine :
         self.SetMatrice_TFIDF() 
 
     def SetVocab(self) : 
-        voc = self.corpus.stats()
+        with contextlib.redirect_stdout(open(os.devnull, 'w')):
+            voc = self.corpus.stats()
         # tri par ordre alphabétique
         voc = voc.sort_values(by="Mot").reset_index(drop=True)
         self.vocab = {}
@@ -39,7 +42,7 @@ class SearchEngine :
         mat_TF = csr_matrix((data,(rows,cols)), shape =(n_docs,n_words))
         #rows = indice du document dans lequel le mot apparait
         #cols = indice du mot dans le vocabulaire
-        #data = la frequence du mot dans ce document (tjr 1 pour l'instant)
+        #data = la frequence du mot dans ce document 
 
         term_freq = np.array(mat_TF.sum(axis=0)).flatten() # term frequency
         doc_freq = np.array((mat_TF > 0).sum(axis=0)).flatten() # document frequency
