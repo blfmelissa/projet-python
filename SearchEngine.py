@@ -5,6 +5,8 @@ from scipy.sparse import csr_matrix
 import string
 import contextlib
 import os
+from collections import defaultdict
+import string
 
 class SearchEngine : 
     def __init__(self, corpus) : 
@@ -99,7 +101,7 @@ class SearchEngine :
             return pd.DataFrame(columns=["Titre", "Auteur", "Extrait", "Similitude", "URL", "Type"])
 
         return pd.DataFrame(results)
-    
+
     # retourne un extrait du texte autour des mots-clés
     def get_excerpt(self, texte, mots_cles, taille=20):
         texte = texte.lower()
@@ -110,3 +112,4 @@ class SearchEngine :
                 end_excerpt = min(len(texte), start + len(mot) + taille)
                 return f"...{texte[start_excerpt:end_excerpt]}..."
         return "Extrait non disponible"
+
