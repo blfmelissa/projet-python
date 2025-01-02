@@ -7,11 +7,19 @@ Une interface sous forme de notebook permet de tester ce moteur de recherche :
 - Les résultats de vos recherches sont triés par ordre décroissant de taux de similitude.
 
 # Installation
-git clone https://github.com/blfmelissa/projet-python.git
-cd projet-python
+1. Cloner le dépôt Git
 
-# Installer les dépendances nécessaires 
-pip install -r requirements.txt
+    git clone https://github.com/blfmelissa/projet-python.git
+
+    cd projet-python
+
+2. Installer les dépendances nécessaires
+
+    pip install -r requirements.txt
 
 # Utilisation
-Ouvrir le répertoire sur VSCode puis aller sur le fichier interface.ipynb
+1. Ouvrir le projet dans VSCode
+2. Lancer l'interface utilisateur
+    - Ouvrez le fichier interface.ipynb dans l'éditeur de notebook intégré de VSCode
+3. Exécuter les cellules du notebook
+    - Cliquez sur Run All
