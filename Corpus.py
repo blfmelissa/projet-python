@@ -132,7 +132,7 @@ class Corpus:
     #On utilisera cette fonction pour la visualisation des auteurs par type de document
     def get_name_authors_by_type(self,typeDoc="all"):
         if typeDoc == 'all':
-            return sorted([author.name for author in self.authors.values()]) 
+            return sorted([author.name for author in self.authors.values()], key=str.lower) 
         else:
             authors_by_type = set()
             for doc in self.id2doc.values():

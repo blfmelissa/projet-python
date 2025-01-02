@@ -31,16 +31,19 @@ would, ID: 18
 yes, ID: 19
 pus test'''
 corpus = Corpus("mon corpus")
-corpus.add(Document("14/11/2024","doc1","me","url1","someday yes wednesday program i am programming"))
-corpus.add(Document("14/11/2024","doc2","confident me","url2","hello everybody actually israel is killing palestinians."))
-corpus.add(Document("14/11/2024","doc3","my girl","url3","palestinians need help. would you like to see my program?"))
-corpus.add(Document("14/11/2024","doc4","my mother","url4","i am very very very thankful for what you did last wednesday you really are the best"))
-
+corpus.add(Document("14/11/2024","doc1","me","url1","last sunday i was programming a game"))
+corpus.add(Document("05/09/2024", "doc10", "my neighbor", "url10", "thank you for watering my plants while I was away, you saved them"))
+corpus.add(Document("14/11/2024","doc3","my girl","url3","your support during the last few weeks has meant the world to me, thank you"))
+corpus.add(Document("14/11/2024","doc4","my mother","url4","i am very very very thankful for what you did last wednesday, you really are the best"))
 
 
 search_engine = SearchEngine(corpus)
-results = search_engine.search("help")
-res = corpus.stats()
-lign = res[res["Mot"] == "program"]
-tst = search_engine.vocab
-print(tst)
+
+
+print(search_engine.search("hands"))
+
+'''
+SearchEngine
+SetVocab()
+SetMatrice_TFIDF()
+search() '''
